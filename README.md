@@ -20,7 +20,7 @@
 | 파일 | 하는 일 |
 | --- | --- |
 | `SPEC.md` | URL 단축기와 두 해시 테이블의 동작 명세 |
-| `src/` | base62, 체이닝·선형 탐지 해시 테이블, 웹 서버 |
+| `src/` | base62, 두 해시 테이블, URL 단축기, 웹 서버 |
 | `tests/` | 인코더, 두 해시 테이블, 서버 테스트 |
 | `experiments/` | 두 충돌 해결 방식의 탐색 비용 CSV·그래프·보고서 |
 | `tools/catchup.sh` | 수업 중 놓친 단계를 따라잡는 스크립트 |
@@ -44,9 +44,9 @@
 
 탐색 비용 실험은 같은 URL 키와 테이블 용량으로 적재율 0.1~0.9를 측정합니다.
 `experiments/results.csv`에는 측정값과 이론값이, `experiments/results.svg`에는
-두 방식의 비교 그래프가, `experiments/report.pdf`에는 1쪽 요약 보고서가 저장됩니다.
-기존 체이닝 실험(적재율 0.25~4.0)은
-`experiments/chaining_results.csv`와 `experiments/chaining_results.svg`에 별도로 저장됩니다.
+두 방식의 비교 그래프가 저장됩니다. `experiments/chaining_results.csv`와
+`experiments/chaining_results.svg`에는 기존 체이닝 실험(적재율 0.25~4.0)이
+보존됩니다. `experiments/report.pdf`는 두 실험과 결과 해석을 담은 2쪽 보고서입니다.
 
 외부 라이브러리는 쓰지 않습니다. Python 표준 모듈만으로 충분합니다.
 
