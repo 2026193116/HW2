@@ -11,6 +11,12 @@ ROOT_DIRECTORY = Path(__file__).resolve().parents[1]
 if str(ROOT_DIRECTORY) not in sys.path:
     sys.path.insert(0, str(ROOT_DIRECTORY))
 
+from experiments.chaining_probe_experiment import (
+    ChainingResult,
+    make_svg as make_chaining_svg,
+    measure as measure_chaining,
+    write_csv as write_chaining_csv,
+)
 from src.hash_table import HashTable
 from src.linear_probing import LinearProbingHashTable
 
@@ -270,7 +276,9 @@ def _pdf_text(x: float, y: float, size: float, value: str) -> str:
     return f"BT /F1 {size:.1f} Tf {x:.2f} {y:.2f} Td ({safe_value}) Tj ET"
 
 
-def make_pdf(results: list[ExperimentResult]) -> bytes:
+def make_pdf(
+    results: list[ExperimentResult], chaining_results: list[ChainingResult]
+) -> bytes:
     width, height = 842, 595
     commands = ["1 J 1 j"]
     colors = ((0.09, 0.41, 0.67), (0.82, 0.35, 0.0))
@@ -440,16 +448,170 @@ def make_pdf(results: list[ExperimentResult]) -> bytes:
         f"Reproducible experiment seed: {RANDOM_SEED}. Data: results.csv; vector chart: results.svg.",
     )
 
-    stream = ("\n".join(commands) + "\n").encode("ascii")
+    first_page_stream = ("\n".join(commands) + "\n").encode("ascii")
+
+    second_commands = ["1 J 1 j"]
+
+    def add_second_text(x: float, y: float, size: float, value: str) -> None:
+        second_commands.append(_pdf_text(x, y, size, value))
+
+    def add_second_line(
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        color: tuple[float, float, float] = (0.2, 0.2, 0.2),
+        dashed: bool = False,
+        line_width: float = 0.8,
+    ) -> None:
+        dash = "[4 3] 0 d" if dashed else "[] 0 d"
+        second_commands.append(
+            f"q {color[0]:.3f} {color[1]:.3f} {color[2]:.3f} RG "
+            f"{line_width:.1f} w {dash} {x1:.2f} {y1:.2f} m "
+            f"{x2:.2f} {y2:.2f} l S Q"
+        )
+
+    add_second_text(55, 561, 19, "Separate chaining at high load factors")
+    add_second_text(
+        55,
+        542,
+        9,
+        f"Original Step 6 range, alpha 0.25-4.0, capacity {CAPACITY}.",
+    )
+    plot_x, plot_y = 100, 278
+    plot_width, plot_height = 660, 220
+    y_max = math.ceil(
+        max(
+            getattr(result, field)
+            for result in chaining_results
+            for field in (
+                "successful_avg_probes",
+                "successful_theory",
+                "unsuccessful_avg_probes",
+                "unsuccessful_theory",
+            )
+        )
+    )
+
+    def chaining_x(alpha: float) -> float:
+        return plot_x + alpha / 4 * plot_width
+
+    def chaining_y(value: float) -> float:
+        return plot_y + value / y_max * plot_height
+
+    high_load_series = (
+        ("success measured", "successful_avg_probes", colors[0], False),
+        ("success theory", "successful_theory", colors[0], True),
+        ("failure measured", "unsuccessful_avg_probes", colors[1], False),
+        ("failure theory", "unsuccessful_theory", colors[1], True),
+    )
+    for index, (label, _, color, dashed) in enumerate(high_load_series):
+        legend_x = 95 + (index % 2) * 260
+        legend_y = 513 - (index // 2) * 16
+        add_second_line(
+            legend_x, legend_y, legend_x + 20, legend_y, color, dashed, 1.4
+        )
+        add_second_text(legend_x + 25, legend_y - 3, 8, label)
+    for tick in range(y_max + 1):
+        y = chaining_y(float(tick))
+        add_second_line(
+            plot_x, y, plot_x + plot_width, y, (0.85, 0.85, 0.85)
+        )
+        add_second_text(plot_x - 28, y - 2, 7, str(tick))
+    for tick in range(17):
+        alpha = tick / 4
+        x = chaining_x(alpha)
+        add_second_line(
+            x, plot_y, x, plot_y + plot_height, (0.92, 0.92, 0.92)
+        )
+        if tick % 2 == 0:
+            add_second_text(x - 7, plot_y - 14, 7, f"{alpha:g}")
+    add_second_line(
+        plot_x, plot_y, plot_x + plot_width, plot_y, line_width=1
+    )
+    add_second_line(
+        plot_x, plot_y, plot_x, plot_y + plot_height, line_width=1
+    )
+    add_second_text(plot_x + 282, plot_y - 29, 8, "Load factor alpha")
+    for _, field, color, dashed in high_load_series:
+        previous = None
+        for result in chaining_results:
+            point = (
+                chaining_x(result.actual_alpha),
+                chaining_y(getattr(result, field)),
+            )
+            if previous is not None:
+                add_second_line(
+                    previous[0],
+                    previous[1],
+                    point[0],
+                    point[1],
+                    color,
+                    dashed,
+                    1.5,
+                )
+            previous = point
+
+    at_four = chaining_results[-1]
+    add_second_text(
+        55,
+        230,
+        9.5,
+        "Each load point averages all stored keys and 4,093 absent keys.",
+    )
+    add_second_text(
+        55,
+        212,
+        9,
+        "Separate chaining estimates: success = 1 + alpha/2; failure = alpha.",
+    )
+    add_second_text(
+        55,
+        193,
+        9.5,
+        (
+            f"At alpha 4.0, measured success = {at_four.successful_avg_probes:.3f} "
+            f"(theory {at_four.successful_theory:.3f});"
+        ),
+    )
+    add_second_text(
+        55,
+        177,
+        9.5,
+        (
+            f"measured failure = {at_four.unsuccessful_avg_probes:.3f} "
+            f"(theory {at_four.unsuccessful_theory:.3f})."
+        ),
+    )
+    add_second_text(
+        55,
+        151,
+        9,
+        "The small differences reflect deterministic hash distribution and finite samples.",
+    )
+    add_second_text(
+        55,
+        130,
+        8,
+        f"Seed {RANDOM_SEED}; full data: chaining_results.csv; graph: chaining_results.svg.",
+    )
+    second_page_stream = ("\n".join(second_commands) + "\n").encode("ascii")
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
-        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>",
         (
             f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {width} {height}] "
-            "/Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>"
+            "/Resources << /Font << /F1 7 0 R >> >> /Contents 4 0 R >>"
         ).encode("ascii"),
-        f"<< /Length {len(stream)} >>\nstream\n".encode("ascii")
-        + stream
+        f"<< /Length {len(first_page_stream)} >>\nstream\n".encode("ascii")
+        + first_page_stream
+        + b"endstream",
+        (
+            f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {width} {height}] "
+            "/Resources << /Font << /F1 7 0 R >> >> /Contents 6 0 R >>"
+        ).encode("ascii"),
+        f"<< /Length {len(second_page_stream)} >>\nstream\n".encode("ascii")
+        + second_page_stream
         + b"endstream",
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
     ]
@@ -477,12 +639,19 @@ def make_pdf(results: list[ExperimentResult]) -> bytes:
 def main() -> None:
     output_directory = Path(__file__).resolve().parent
     results = measure()
+    chaining_results = measure_chaining()
     write_csv(results, output_directory / "results.csv")
     (output_directory / "results.svg").write_text(make_svg(results), encoding="utf-8")
-    (output_directory / "report.pdf").write_bytes(make_pdf(results))
+    write_chaining_csv(chaining_results, output_directory / "chaining_results.csv")
+    (output_directory / "chaining_results.svg").write_text(
+        make_chaining_svg(chaining_results), encoding="utf-8"
+    )
+    (output_directory / "report.pdf").write_bytes(
+        make_pdf(results, chaining_results)
+    )
     print(
-        f"Wrote {len(results)} load-factor measurements to "
-        f"{output_directory / 'results.csv'}, results.svg, and report.pdf"
+        f"Wrote {len(results)} comparison and {len(chaining_results)} chaining "
+        f"measurements to CSV/SVG outputs and {output_directory / 'report.pdf'}"
     )
 
 
