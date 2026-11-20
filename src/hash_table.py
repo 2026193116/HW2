@@ -7,16 +7,24 @@ Value = TypeVar("Value")
 
 
 class HashTable(Generic[Value]):
-    def __init__(self, capacity: int = 8, max_load_factor: float = 0.75) -> None:
+    def __init__(
+        self,
+        capacity: int = 8,
+        max_load: float | None = 0.75,
+        *,
+        max_load_factor: float | None = None,
+    ) -> None:
         if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity < 1:
             raise ValueError("capacity must be a positive integer")
-        if not 0 < max_load_factor <= 1:
-            raise ValueError("max_load_factor must be greater than 0 and at most 1")
+        if max_load_factor is not None:
+            max_load = max_load_factor
+        if max_load is not None and not 0 < max_load <= 1:
+            raise ValueError("max_load must be greater than 0 and at most 1")
         self._buckets: list[list[tuple[str, Value]]] = [
             [] for _ in range(capacity)
         ]
         self._size = 0
-        self._max_load_factor = max_load_factor
+        self._max_load_factor = max_load
 
     @property
     def capacity(self) -> int:
@@ -54,7 +62,10 @@ class HashTable(Generic[Value]):
             bucket[position] = (key, value)
             return
 
-        if (self._size + 1) / self.capacity > self._max_load_factor:
+        if (
+            self._max_load_factor is not None
+            and (self._size + 1) / self.capacity > self._max_load_factor
+        ):
             self._resize(self.capacity * 2)
             bucket = self._buckets[self._bucket_index(key)]
         bucket.append((key, value))

@@ -36,6 +36,16 @@ class HashTableTests(unittest.TestCase):
         for value in range(7):
             self.assertEqual(table.get(f"key-{value}"), value)
 
+    def test_none_max_load_disables_resizing(self):
+        table = HashTable(capacity=4, max_load=None)
+        for value in range(12):
+            table.put(f"key-{value}", value)
+
+        self.assertEqual(table.capacity, 4)
+        self.assertEqual(len(table), 12)
+        for value in range(12):
+            self.assertEqual(table.get(f"key-{value}"), value)
+
     def test_items_contains_all_entries(self):
         table = HashTable()
         table.put("one", 1)
