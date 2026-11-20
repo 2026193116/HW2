@@ -11,7 +11,7 @@
 PORT ?= 8000
 STRATEGY ?= chaining
 
-.PHONY: all test serve experiment clean
+.PHONY: all test serve experiment experiment-chaining clean
 
 all: test
 
@@ -23,6 +23,9 @@ serve:
 
 experiment:
 	@python3 experiments/probe_experiment.py
+
+experiment-chaining:
+	@python3 experiments/chaining_probe_experiment.py
 
 clean:
 	rm -rf src/__pycache__ tests/__pycache__ experiments/__pycache__

@@ -39,11 +39,14 @@
 | 체이닝 웹 서버 (포트 8000) | `make serve` |
 | 선형 탐지 웹 서버 | `make serve STRATEGY=linear` |
 | 충돌 방식 비교 (CSV·SVG·PDF 생성) | `make experiment` |
+| 체이닝 적재율 0.25~4.0 실험 | `make experiment-chaining` |
 | 놓친 단계 따라잡기 | `sh tools/catchup.sh <단계 번호>` |
 
 탐색 비용 실험은 같은 URL 키와 테이블 용량으로 적재율 0.1~0.9를 측정합니다.
 `experiments/results.csv`에는 측정값과 이론값이, `experiments/results.svg`에는
 두 방식의 비교 그래프가, `experiments/report.pdf`에는 1쪽 요약 보고서가 저장됩니다.
+기존 체이닝 실험(적재율 0.25~4.0)은
+`experiments/chaining_results.csv`와 `experiments/chaining_results.svg`에 별도로 저장됩니다.
 
 외부 라이브러리는 쓰지 않습니다. Python 표준 모듈만으로 충분합니다.
 
