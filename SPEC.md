@@ -40,8 +40,9 @@
 `src.shortener.URLShortener`는 `chaining`(기본값) 또는 `linear` 전략을 선택할 수 있다.
 `shorten(url)`은 절대 HTTP 또는 HTTPS URL만 받는다.
 호스트가 없거나 스킴이 다르거나 URL이 빈 문자열이면 `ValueError`다. 같은 URL은
-같은 코드를 반환한다. `expand(code)`는 저장되지 않은 코드에 `KeyError`를 낸다.
-각 단축기의 ID는 0부터 증가하며 base62로 인코딩한다.
+같은 코드를 반환한다. 새 URL마다 이전 ID 다음의 정수 ID를 발급하며, ID 0부터
+base62로 인코딩한다. URL의 해시값을 단축 코드로 사용하지 않는다.
+`expand(code)`는 저장되지 않은 코드에 `KeyError`를 낸다.
 
 ## 5. 웹 서버
 
