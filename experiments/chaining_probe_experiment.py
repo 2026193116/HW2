@@ -113,10 +113,10 @@ def make_svg(results: list[ChainingResult]) -> str:
     plot_width = width - left - right
     plot_height = height - top - bottom
     fields = (
-        ("Successful measured", "successful_avg_probes", "#1769aa", ""),
-        ("Successful theory", "successful_theory", "#1769aa", "8 5"),
-        ("Unsuccessful measured", "unsuccessful_avg_probes", "#d05a00", ""),
-        ("Unsuccessful theory", "unsuccessful_theory", "#d05a00", "8 5"),
+        ("성공 측정", "successful_avg_probes", "#1769aa", ""),
+        ("성공 이론", "successful_theory", "#1769aa", "8 5"),
+        ("실패 측정", "unsuccessful_avg_probes", "#d05a00", ""),
+        ("실패 이론", "unsuccessful_theory", "#d05a00", "8 5"),
     )
     maximum = max(
         getattr(result, field[1])
@@ -133,10 +133,10 @@ def make_svg(results: list[ChainingResult]) -> str:
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<title>Separate chaining probe costs for load factors 0.25 to 4.0</title>",
+        "<title>체이닝 적재율 0.25~4.0의 탐색 비용</title>",
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="sans-serif" font-size="13" fill="#222">',
-        f'<text x="{width / 2}" y="24" text-anchor="middle" font-size="18">Separate chaining: measured and theoretical probe costs</text>',
+        f'<text x="{width / 2}" y="24" text-anchor="middle" font-size="18">체이닝: 적재율에 따른 탐색 비용 측정값과 이론값</text>',
     ]
     for tick in range(math.floor(y_max) + 1):
         y = y_position(float(tick))
@@ -160,8 +160,8 @@ def make_svg(results: list[ChainingResult]) -> str:
         [
             f'<line x1="{left}" y1="{top + plot_height}" x2="{left + plot_width}" y2="{top + plot_height}" stroke="#333"/>',
             f'<line x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_height}" stroke="#333"/>',
-            f'<text x="{left + plot_width / 2}" y="{height - 20}" text-anchor="middle">Load factor alpha</text>',
-            f'<text x="20" y="{top + plot_height / 2}" text-anchor="middle" transform="rotate(-90 20 {top + plot_height / 2})">Average key comparisons</text>',
+            f'<text x="{left + plot_width / 2}" y="{height - 20}" text-anchor="middle">적재율 α</text>',
+            f'<text x="20" y="{top + plot_height / 2}" text-anchor="middle" transform="rotate(-90 20 {top + plot_height / 2})">평균 탐색 횟수</text>',
         ]
     )
     for index, (label, attribute, color, dash) in enumerate(fields):

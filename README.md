@@ -48,7 +48,9 @@
 `experiments/chaining_results.svg`에는 기존 체이닝 실험(적재율 0.25~4.0)이
 보존됩니다. `experiments/report.pdf`는 두 실험과 결과 해석을 담은 2쪽 보고서입니다.
 
-외부 라이브러리는 쓰지 않습니다. Python 표준 모듈만으로 충분합니다.
+외부 Python 라이브러리는 쓰지 않습니다. `make experiment`으로 한글 PDF를
+생성하려면 시스템에 NanumGothic 글꼴이 필요합니다
+(Debian/Ubuntu: `fonts-nanum`). 글꼴은 PDF에 포함되므로 읽을 때는 필요하지 않습니다.
 
 ## 로컬에서 하기
 
