@@ -3,7 +3,8 @@ import threading
 import unittest
 from urllib.parse import urlencode
 
-from src.server import URLShortener, create_server
+from src.server import create_server
+from src.shortener import URLShortener
 
 
 class ServerTests(unittest.TestCase):
