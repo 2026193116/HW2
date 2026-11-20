@@ -29,6 +29,12 @@ class Base62Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             decode("a!")
 
+    def test_rejects_wrong_input_types(self):
+        with self.assertRaises(TypeError):
+            encode(1.5)
+        with self.assertRaises(TypeError):
+            decode(62)
+
 
 if __name__ == "__main__":
     unittest.main()

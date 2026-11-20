@@ -66,6 +66,17 @@ class LinearProbingTests(unittest.TestCase):
         self.assertEqual(table.get("Key"), 1)
         self.assertEqual(table.get("key"), 2)
 
+    def test_empty_lookup_and_non_string_keys(self):
+        table = LinearProbingHashTable()
+        self.assertIsNone(table.get("missing"))
+        self.assertFalse(table.contains("missing"))
+        self.assertEqual(table.probe_count("missing"), 1)
+
+        with self.assertRaises(TypeError):
+            table.put(1, "value")
+        with self.assertRaises(TypeError):
+            table.get(1)
+
 
 if __name__ == "__main__":
     unittest.main()
