@@ -3,12 +3,14 @@ import threading
 import unittest
 from urllib.parse import urlencode
 
-from src.server import create_server
+from src.server import URLShortener, create_server
 
 
 class ServerTests(unittest.TestCase):
+    strategy = "chaining"
+
     def setUp(self):
-        self.server = create_server("127.0.0.1", 0)
+        self.server = create_server("127.0.0.1", 0, strategy=self.strategy)
         self.thread = threading.Thread(target=self.server.serve_forever)
         self.thread.start()
 
@@ -69,6 +71,37 @@ class ServerTests(unittest.TestCase):
         self.assertIn("<details>", body)
         self.assertIn("→", body)
 
+    def test_linear_strategy_and_table_show_probe_path(self):
+        self.server.shortener = URLShortener(strategy="linear")
+        table = self.server.shortener.table
+        urls = [
+            f"https://wrap.example/{index}"
+            for index in range(100)
+            if table.hash_details(f"https://wrap.example/{index}")[0] == 7
+        ][:3]
+        self.assertEqual(len(urls), 3)
+        for url in urls:
+            self.server.shortener.shorten(url)
+
+        status, _, body = self.request("GET", "/table")
+        self.assertEqual(status, 200)
+        self.assertIn("선형 탐지", body)
+        self.assertIn("탐색한 칸: 7 → 0 → 1", body)
+        self.assertIn("(현재 칸 + 1) % 8", body)
+        self.assertIn("Horner 해시 계산 보기", body)
+
+    def test_shortener_validates_urls_and_unknown_codes_raise(self):
+        shortener = URLShortener(strategy="linear")
+        with self.assertRaises(ValueError):
+            shortener.shorten("javascript:alert(1)")
+        with self.assertRaises(ValueError):
+            shortener.shorten("https:///missing-host")
+
+        code = shortener.shorten("https://example.com/")
+        self.assertEqual(shortener.expand(code), "https://example.com/")
+        with self.assertRaises(KeyError):
+            shortener.expand("unknown")
+
     def test_duplicate_urls_reuse_the_same_code(self):
         url = "https://example.com/repeated"
         first_status, _, first_body = self.shorten(url)
@@ -85,6 +118,10 @@ class ServerTests(unittest.TestCase):
 
         status, _, _ = self.request("GET", "/r/unknown")
         self.assertEqual(status, 404)
+
+
+class LinearServerTests(ServerTests):
+    strategy = "linear"
 
 
 if __name__ == "__main__":

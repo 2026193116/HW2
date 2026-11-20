@@ -62,6 +62,8 @@ class HashTable(Generic[Value]):
             bucket[position] = (key, value)
             return
 
+        if self._size == self.capacity and self._max_load_factor == 1:
+            raise OverflowError("hash table is full")
         if (
             self._max_load_factor is not None
             and (self._size + 1) / self.capacity > self._max_load_factor

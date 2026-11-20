@@ -18,7 +18,8 @@
 
 ## 3. 해시 테이블
 
-해시 테이블은 문자열 키와 임의의 값을 저장하고 `put(key, value)`, `get(key)`,
+체이닝과 선형 탐지 해시 테이블은 각각 `HashTable`과 `LinearProbingHashTable`로
+제공하며, 문자열 키와 임의의 값을 저장하고 `put(key, value)`, `get(key)`,
 `contains(key)`, `items()`, `probe_count(key)`를 제공한다. 키는 대소문자를 구분한다.
 같은 키에 다시 `put`하면 기존 값을 교체하며 원소 수를 늘리지 않는다. 없는 키의
 `get`은 `None`, `contains`는 `False`를 반환한다.
@@ -31,18 +32,21 @@
 키를 찾을 때까지의 탐색을 세며, 선형 탐지는 한 바퀴(용량만큼) 후 종료한다.
 설정된 적재율 1.0으로 테이블이 가득 찬 상태에서 새 키를 넣으면 `OverflowError`를
 내고 무한 탐색하지 않는다. 두 방식 모두 `probe_count`와 사람이 읽을 수 있는 탐색
-근거를 제공한다.
+근거를 제공한다. 선형 탐지는 비어 있는 칸 없이 한 바퀴를 모두 확인해도 키가 없으면
+탐색을 종료하고, 새 항목 삽입은 `OverflowError`를 낸다.
 
 ## 4. 단축기
 
-`src.shortener.URLShortener`의 `shorten(url)`은 절대 HTTP 또는 HTTPS URL만 받는다.
+`src.server.URLShortener`는 `chaining`(기본값) 또는 `linear` 전략을 선택할 수 있다.
+`shorten(url)`은 절대 HTTP 또는 HTTPS URL만 받는다.
 호스트가 없거나 스킴이 다르거나 URL이 빈 문자열이면 `ValueError`다. 같은 URL은
 같은 코드를 반환한다. `expand(code)`는 저장되지 않은 코드에 `KeyError`를 낸다.
 각 단축기의 ID는 0부터 증가하며 base62로 인코딩한다.
 
 ## 5. 웹 서버
 
-`python3 src/server.py --port PORT`는 로컬 HTTP 서버를 실행한다. `/`는 URL 입력 폼과
+`python3 src/server.py --port PORT [--strategy chaining|linear]`는 로컬 HTTP 서버를
+실행한다. `/`는 URL 입력 폼과
 결과를, `POST /shorten`은 폼 필드 `url`을 받아 단축 결과를 보여준다. `GET /r/CODE`는
 저장된 원 URL로 302 리다이렉트하고, 없는 코드는 404다. `GET /table`은 현재 테이블의
 버킷·항목, 탐색한 칸, 호너 해시 계산 근거를 HTML로 보여준다. 외부 네트워크나

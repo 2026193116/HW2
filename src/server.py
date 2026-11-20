@@ -13,15 +13,26 @@ if str(ROOT_DIRECTORY) not in sys.path:
 
 from src.base62 import encode
 from src.hash_table import HashTable
+from src.linear_probing import LinearProbingHashTable
 
 MAX_REQUEST_BYTES = 16_384
 
 
 class URLShortener:
-    def __init__(self) -> None:
-        self.table: HashTable[str] = HashTable()
+    def __init__(self, strategy: str = "chaining") -> None:
+        if strategy == "chaining":
+            self.table: HashTable[str] | LinearProbingHashTable[str] = HashTable()
+        elif strategy == "linear":
+            self.table = LinearProbingHashTable()
+        else:
+            raise ValueError("strategy must be 'chaining' or 'linear'")
+        self.strategy = strategy
 
     def shorten(self, url: str) -> str:
+        if not isinstance(url, str):
+            raise TypeError("url must be a string")
+        if not is_http_url(url):
+            raise ValueError("url must be an absolute HTTP or HTTPS URL")
         existing_code = self.table.get(url)
         if existing_code is not None:
             return existing_code
@@ -30,11 +41,11 @@ class URLShortener:
         self.table.put(url, code)
         return code
 
-    def expand(self, code: str) -> str | None:
+    def expand(self, code: str) -> str:
         for url, stored_code in self.table.items():
             if stored_code == code:
                 return url
-        return None
+        raise KeyError(code)
 
 
 def is_http_url(value: str) -> bool:
@@ -112,6 +123,9 @@ def render_result(url: str, code: str) -> str:
 
 
 def render_table(shortener: URLShortener) -> str:
+    if isinstance(shortener.table, LinearProbingHashTable):
+        return render_linear_table(shortener)
+
     buckets: list[list[tuple[str, str]]] = [
         [] for _ in range(shortener.table.capacity)
     ]
@@ -158,6 +172,59 @@ def render_table(shortener: URLShortener) -> str:
     return page("현재 해시 테이블", "\n".join(content))
 
 
+def render_linear_table(shortener: URLShortener) -> str:
+    table = shortener.table
+    if not isinstance(table, LinearProbingHashTable):
+        raise TypeError("linear table rendering requires linear probing")
+
+    capacity = table.capacity
+    load_factor = len(table) / capacity
+    content = [
+        f"<p>방식: 선형 탐지 · 칸 수: {capacity} · 저장된 URL: {len(table)} · 적재율: {load_factor:.3f}</p>"
+    ]
+    for slot_index, slot in table.slot_items():
+        content.append('<div class="chain">')
+        content.append(f'<strong>칸 {slot_index}</strong><span class="arrow">→</span>')
+        if slot is None:
+            content.append("<span>∅ (비어 있음)</span>")
+        else:
+            url, code = slot
+            home, steps = table.hash_details(url)
+            path = table.probe_path(url)
+            content.append('<article class="node">')
+            content.append(f"<p>URL 키: <code>{html.escape(url)}</code></p>")
+            content.append(f"<p>짧은 코드: <code>{html.escape(code)}</code></p>")
+            short_path = f"/r/{html.escape(code, quote=True)}"
+            content.append(
+                f'<p>짧은 링크: <a href="{short_path}">{short_path}</a></p>'
+            )
+            content.append(
+                f"<p>성공 탐색 확인 칸 수: {table.probe_count(url)}</p>"
+            )
+            content.append(
+                f"<p>탐색한 칸: {' → '.join(str(index) for index in path)}</p>"
+            )
+            content.append(
+                f"<p>계산 근거: 시작 칸은 Horner 해시 {home}; 충돌 시 "
+                f"(현재 칸 + 1) % {capacity}로 이동합니다.</p>"
+            )
+            content.append(
+                f"<details><summary>Horner 해시 계산 보기 (시작 칸 {home})</summary>"
+                '<ol class="hash-steps">'
+            )
+            for character, previous, result in steps:
+                character_text = html.escape(repr(character))
+                content.append(
+                    f"<li><code>({previous} × 31 + {ord(character)}) % {capacity} = {result}</code> "
+                    f"<span>문자 {character_text}</span></li>"
+                )
+            content.append("</ol></details></article>")
+            content.append('<span class="arrow">→</span><span>∅</span>')
+        content.append("</div>")
+
+    return page("현재 해시 테이블", "\n".join(content))
+
+
 class ShortenerRequestHandler(BaseHTTPRequestHandler):
     def _shortener(self) -> URLShortener:
         if not isinstance(self.server, ShortenerHTTPServer):
@@ -182,8 +249,9 @@ class ShortenerRequestHandler(BaseHTTPRequestHandler):
             return
         if path.startswith("/r/"):
             code = path.removeprefix("/r/")
-            url = self._shortener().expand(code)
-            if url is None:
+            try:
+                url = self._shortener().expand(code)
+            except KeyError:
                 self.send_error(404, "Short URL not found")
                 return
             self.send_response(302)
@@ -232,21 +300,26 @@ class ShortenerRequestHandler(BaseHTTPRequestHandler):
 
 
 class ShortenerHTTPServer(HTTPServer):
-    def __init__(self, address: tuple[str, int]) -> None:
-        self.shortener = URLShortener()
+    def __init__(self, address: tuple[str, int], strategy: str = "chaining") -> None:
+        self.shortener = URLShortener(strategy)
         super().__init__(address, ShortenerRequestHandler)
 
 
-def create_server(host: str = "0.0.0.0", port: int = 8000) -> ShortenerHTTPServer:
-    return ShortenerHTTPServer((host, port))
+def create_server(
+    host: str = "0.0.0.0", port: int = 8000, strategy: str = "chaining"
+) -> ShortenerHTTPServer:
+    return ShortenerHTTPServer((host, port), strategy)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the URL shortener web server.")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument(
+        "--strategy", choices=("chaining", "linear"), default="chaining"
+    )
     args = parser.parse_args()
 
-    with create_server(port=args.port) as server:
+    with create_server(port=args.port, strategy=args.strategy) as server:
         print(f"Serving on http://0.0.0.0:{server.server_port}")
         try:
             server.serve_forever()
