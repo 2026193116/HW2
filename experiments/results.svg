@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+<title>체이닝과 선형 탐지의 탐색 비용</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="sans-serif" font-size="13" fill="#222">
+<text x="550.0" y="32" text-anchor="middle" font-size="21">적재율에 따른 해시 테이블 탐색 비용</text>
+<text x="287.0" y="90" text-anchor="middle" font-size="17">체이닝</text>
+<line x1="97" y1="470.00" x2="516" y2="470.00" stroke="#ddd"/>
+<text x="87" y="474.00" text-anchor="end">0</text>
+<line x1="97" y1="290.00" x2="516" y2="290.00" stroke="#ddd"/>
+<text x="87" y="294.00" text-anchor="end">1</text>
+<line x1="97" y1="110.00" x2="516" y2="110.00" stroke="#ddd"/>
+<text x="87" y="114.00" text-anchor="end">2</text>
+<line x1="97.00" y1="110" x2="97.00" y2="470" stroke="#eee"/>
+<text x="97.00" y="490" text-anchor="middle">0.1</text>
+<line x1="201.75" y1="110" x2="201.75" y2="470" stroke="#eee"/>
+<text x="201.75" y="490" text-anchor="middle">0.3</text>
+<line x1="306.50" y1="110" x2="306.50" y2="470" stroke="#eee"/>
+<text x="306.50" y="490" text-anchor="middle">0.5</text>
+<line x1="411.25" y1="110" x2="411.25" y2="470" stroke="#eee"/>
+<text x="411.25" y="490" text-anchor="middle">0.7</text>
+<line x1="516.00" y1="110" x2="516.00" y2="470" stroke="#eee"/>
+<text x="516.00" y="490" text-anchor="middle">0.9</text>
+<line x1="97" y1="470" x2="516" y2="470" stroke="#333"/>
+<line x1="97" y1="110" x2="97" y2="470" stroke="#333"/>
+<text x="306.5" y="520" text-anchor="middle">적재율 α</text>
+<polyline points="96.96,280.32 149.43,272.20 201.76,260.68 254.10,253.38 306.44,244.43 358.90,238.11 411.24,228.74 463.57,220.01 516.04,211.14" fill="none" stroke="#1769aa" stroke-width="2"/>
+<circle cx="96.96" cy="280.32" r="2.5" fill="#1769aa"/>
+<circle cx="149.43" cy="272.20" r="2.5" fill="#1769aa"/>
+<circle cx="201.76" cy="260.68" r="2.5" fill="#1769aa"/>
+<circle cx="254.10" cy="253.38" r="2.5" fill="#1769aa"/>
+<circle cx="306.44" cy="244.43" r="2.5" fill="#1769aa"/>
+<circle cx="358.90" cy="238.11" r="2.5" fill="#1769aa"/>
+<circle cx="411.24" cy="228.74" r="2.5" fill="#1769aa"/>
+<circle cx="463.57" cy="220.01" r="2.5" fill="#1769aa"/>
+<circle cx="516.04" cy="211.14" r="2.5" fill="#1769aa"/>
+<line x1="72" y1="120" x2="95" y2="120" stroke="#1769aa" stroke-width="2"/>
+<text x="101" y="124">성공 측정</text>
+<polyline points="96.96,281.01 149.43,271.99 201.76,263.00 254.10,254.00 306.44,245.01 358.90,236.00 411.24,227.00 463.57,218.01 516.04,208.99" fill="none" stroke="#1769aa" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="96.96" cy="281.01" r="2.5" fill="#1769aa"/>
+<circle cx="149.43" cy="271.99" r="2.5" fill="#1769aa"/>
+<circle cx="201.76" cy="263.00" r="2.5" fill="#1769aa"/>
+<circle cx="254.10" cy="254.00" r="2.5" fill="#1769aa"/>
+<circle cx="306.44" cy="245.01" r="2.5" fill="#1769aa"/>
+<circle cx="358.90" cy="236.00" r="2.5" fill="#1769aa"/>
+<circle cx="411.24" cy="227.00" r="2.5" fill="#1769aa"/>
+<circle cx="463.57" cy="218.01" r="2.5" fill="#1769aa"/>
+<circle cx="516.04" cy="208.99" r="2.5" fill="#1769aa"/>
+<line x1="292" y1="120" x2="315" y2="120" stroke="#1769aa" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="321" y="124">성공 이론</text>
+<polyline points="96.96,451.18 149.43,433.85 201.76,415.82 254.10,397.61 306.44,379.45 358.90,360.94 411.24,343.56 463.57,325.75 516.04,308.21" fill="none" stroke="#d05a00" stroke-width="2"/>
+<circle cx="96.96" cy="451.18" r="2.5" fill="#d05a00"/>
+<circle cx="149.43" cy="433.85" r="2.5" fill="#d05a00"/>
+<circle cx="201.76" cy="415.82" r="2.5" fill="#d05a00"/>
+<circle cx="254.10" cy="397.61" r="2.5" fill="#d05a00"/>
+<circle cx="306.44" cy="379.45" r="2.5" fill="#d05a00"/>
+<circle cx="358.90" cy="360.94" r="2.5" fill="#d05a00"/>
+<circle cx="411.24" cy="343.56" r="2.5" fill="#d05a00"/>
+<circle cx="463.57" cy="325.75" r="2.5" fill="#d05a00"/>
+<circle cx="516.04" cy="308.21" r="2.5" fill="#d05a00"/>
+<line x1="72" y1="142" x2="95" y2="142" stroke="#d05a00" stroke-width="2"/>
+<text x="101" y="146">실패 측정</text>
+<polyline points="96.96,452.01 149.43,433.98 201.76,416.00 254.10,398.01 306.44,380.02 358.90,361.99 411.24,344.00 463.57,326.02 516.04,307.99" fill="none" stroke="#d05a00" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="96.96" cy="452.01" r="2.5" fill="#d05a00"/>
+<circle cx="149.43" cy="433.98" r="2.5" fill="#d05a00"/>
+<circle cx="201.76" cy="416.00" r="2.5" fill="#d05a00"/>
+<circle cx="254.10" cy="398.01" r="2.5" fill="#d05a00"/>
+<circle cx="306.44" cy="380.02" r="2.5" fill="#d05a00"/>
+<circle cx="358.90" cy="361.99" r="2.5" fill="#d05a00"/>
+<circle cx="411.24" cy="344.00" r="2.5" fill="#d05a00"/>
+<circle cx="463.57" cy="326.02" r="2.5" fill="#d05a00"/>
+<circle cx="516.04" cy="307.99" r="2.5" fill="#d05a00"/>
+<line x1="292" y1="142" x2="315" y2="142" stroke="#d05a00" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="321" y="146">실패 이론</text>
+<text x="821.0" y="90" text-anchor="middle" font-size="17">선형 탐지</text>
+<line x1="631" y1="470.00" x2="1050" y2="470.00" stroke="#ddd"/>
+<text x="621" y="474.00" text-anchor="end">0</text>
+<line x1="631" y1="410.00" x2="1050" y2="410.00" stroke="#ddd"/>
+<text x="621" y="414.00" text-anchor="end">10</text>
+<line x1="631" y1="350.00" x2="1050" y2="350.00" stroke="#ddd"/>
+<text x="621" y="354.00" text-anchor="end">20</text>
+<line x1="631" y1="290.00" x2="1050" y2="290.00" stroke="#ddd"/>
+<text x="621" y="294.00" text-anchor="end">30</text>
+<line x1="631" y1="230.00" x2="1050" y2="230.00" stroke="#ddd"/>
+<text x="621" y="234.00" text-anchor="end">40</text>
+<line x1="631" y1="170.00" x2="1050" y2="170.00" stroke="#ddd"/>
+<text x="621" y="174.00" text-anchor="end">50</text>
+<line x1="631" y1="110.00" x2="1050" y2="110.00" stroke="#ddd"/>
+<text x="621" y="114.00" text-anchor="end">60</text>
+<line x1="631.00" y1="110" x2="631.00" y2="470" stroke="#eee"/>
+<text x="631.00" y="490" text-anchor="middle">0.1</text>
+<line x1="735.75" y1="110" x2="735.75" y2="470" stroke="#eee"/>
+<text x="735.75" y="490" text-anchor="middle">0.3</text>
+<line x1="840.50" y1="110" x2="840.50" y2="470" stroke="#eee"/>
+<text x="840.50" y="490" text-anchor="middle">0.5</text>
+<line x1="945.25" y1="110" x2="945.25" y2="470" stroke="#eee"/>
+<text x="945.25" y="490" text-anchor="middle">0.7</text>
+<line x1="1050.00" y1="110" x2="1050.00" y2="470" stroke="#eee"/>
+<text x="1050.00" y="490" text-anchor="middle">0.9</text>
+<line x1="631" y1="470" x2="1050" y2="470" stroke="#333"/>
+<line x1="631" y1="110" x2="631" y2="470" stroke="#333"/>
+<text x="840.5" y="520" text-anchor="middle">적재율 α</text>
+<polyline points="630.96,463.60 683.43,463.18 735.76,462.56 788.10,461.90 840.44,460.84 892.90,459.83 945.24,457.64 997.57,453.26 1050.04,442.68" fill="none" stroke="#1769aa" stroke-width="2"/>
+<circle cx="630.96" cy="463.60" r="2.5" fill="#1769aa"/>
+<circle cx="683.43" cy="463.18" r="2.5" fill="#1769aa"/>
+<circle cx="735.76" cy="462.56" r="2.5" fill="#1769aa"/>
+<circle cx="788.10" cy="461.90" r="2.5" fill="#1769aa"/>
+<circle cx="840.44" cy="460.84" r="2.5" fill="#1769aa"/>
+<circle cx="892.90" cy="459.83" r="2.5" fill="#1769aa"/>
+<circle cx="945.24" cy="457.64" r="2.5" fill="#1769aa"/>
+<circle cx="997.57" cy="453.26" r="2.5" fill="#1769aa"/>
+<circle cx="1050.04" cy="442.68" r="2.5" fill="#1769aa"/>
+<line x1="606" y1="120" x2="629" y2="120" stroke="#1769aa" stroke-width="2"/>
+<text x="635" y="124">성공 측정</text>
+<polyline points="630.96,463.67 683.43,463.25 735.76,462.71 788.10,462.00 840.44,461.00 892.90,459.50 945.24,457.00 997.57,452.01 1050.04,436.98" fill="none" stroke="#1769aa" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="630.96" cy="463.67" r="2.5" fill="#1769aa"/>
+<circle cx="683.43" cy="463.25" r="2.5" fill="#1769aa"/>
+<circle cx="735.76" cy="462.71" r="2.5" fill="#1769aa"/>
+<circle cx="788.10" cy="462.00" r="2.5" fill="#1769aa"/>
+<circle cx="840.44" cy="461.00" r="2.5" fill="#1769aa"/>
+<circle cx="892.90" cy="459.50" r="2.5" fill="#1769aa"/>
+<circle cx="945.24" cy="457.00" r="2.5" fill="#1769aa"/>
+<circle cx="997.57" cy="452.01" r="2.5" fill="#1769aa"/>
+<circle cx="1050.04" cy="436.98" r="2.5" fill="#1769aa"/>
+<line x1="826" y1="120" x2="849" y2="120" stroke="#1769aa" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="855" y="124">성공 이론</text>
+<polyline points="630.96,463.26 683.43,462.20 735.76,460.73 788.10,458.58 840.44,454.31 892.90,448.14 945.24,434.68 997.57,387.45 1050.04,262.10" fill="none" stroke="#d05a00" stroke-width="2"/>
+<circle cx="630.96" cy="463.26" r="2.5" fill="#d05a00"/>
+<circle cx="683.43" cy="462.20" r="2.5" fill="#d05a00"/>
+<circle cx="735.76" cy="460.73" r="2.5" fill="#d05a00"/>
+<circle cx="788.10" cy="458.58" r="2.5" fill="#d05a00"/>
+<circle cx="840.44" cy="454.31" r="2.5" fill="#d05a00"/>
+<circle cx="892.90" cy="448.14" r="2.5" fill="#d05a00"/>
+<circle cx="945.24" cy="434.68" r="2.5" fill="#d05a00"/>
+<circle cx="997.57" cy="387.45" r="2.5" fill="#d05a00"/>
+<circle cx="1050.04" cy="262.10" r="2.5" fill="#d05a00"/>
+<line x1="606" y1="142" x2="629" y2="142" stroke="#d05a00" stroke-width="2"/>
+<text x="635" y="146">실패 측정</text>
+<polyline points="630.96,463.30 683.43,462.31 735.76,460.88 788.10,458.67 840.44,455.01 892.90,448.25 945.24,433.67 997.57,392.07 1050.04,166.56" fill="none" stroke="#d05a00" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="630.96" cy="463.30" r="2.5" fill="#d05a00"/>
+<circle cx="683.43" cy="462.31" r="2.5" fill="#d05a00"/>
+<circle cx="735.76" cy="460.88" r="2.5" fill="#d05a00"/>
+<circle cx="788.10" cy="458.67" r="2.5" fill="#d05a00"/>
+<circle cx="840.44" cy="455.01" r="2.5" fill="#d05a00"/>
+<circle cx="892.90" cy="448.25" r="2.5" fill="#d05a00"/>
+<circle cx="945.24" cy="433.67" r="2.5" fill="#d05a00"/>
+<circle cx="997.57" cy="392.07" r="2.5" fill="#d05a00"/>
+<circle cx="1050.04" cy="166.56" r="2.5" fill="#d05a00"/>
+<line x1="826" y1="142" x2="849" y2="142" stroke="#d05a00" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="855" y="146">실패 이론</text>
+<text x="550.0" y="600" text-anchor="middle">동일 URL 키, 테이블 용량 4093; 점선은 이론값</text>
+</g>
+</svg>

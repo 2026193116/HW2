@@ -19,8 +19,10 @@
 
 | 파일 | 하는 일 |
 | --- | --- |
-| `SPEC.md` | 명세 틀. 에이전트가 초안을 쓰고 **본인이 고칩니다** |
-| `src/` · `tests/` · `experiments/` | 비어 있습니다. 수업에서 채웁니다 |
+| `SPEC.md` | URL 단축기와 두 해시 테이블의 동작 명세 |
+| `src/` | base62, 두 해시 테이블, URL 단축기, 웹 서버 |
+| `tests/` | 인코더, 두 해시 테이블, 서버 테스트 |
+| `experiments/` | 두 충돌 해결 방식의 탐색 비용 CSV·그래프·보고서 |
 | `tools/catchup.sh` | 수업 중 놓친 단계를 따라잡는 스크립트 |
 | `Makefile` | `make test` · `make serve` · `make experiment` |
 
@@ -34,11 +36,21 @@
 | 하고 싶은 것 | 명령 |
 | --- | --- |
 | 테스트 | `make test` |
-| 웹 서버 (포트 8000) | `make serve` |
-| 충돌 실험 | `make experiment` |
+| 체이닝 웹 서버 (포트 8000) | `make serve` |
+| 선형 탐지 웹 서버 | `make serve STRATEGY=linear` |
+| 충돌 방식 비교 (CSV·SVG·PDF 생성) | `make experiment` |
+| 체이닝 적재율 0.25~4.0 실험 | `make experiment-chaining` |
 | 놓친 단계 따라잡기 | `sh tools/catchup.sh <단계 번호>` |
 
-외부 라이브러리는 쓰지 않습니다. Python 표준 모듈만으로 충분합니다.
+탐색 비용 실험은 같은 URL 키와 테이블 용량으로 적재율 0.1~0.9를 측정합니다.
+`experiments/results.csv`에는 측정값과 이론값이, `experiments/results.svg`에는
+두 방식의 비교 그래프가 저장됩니다. `experiments/chaining_results.csv`와
+`experiments/chaining_results.svg`에는 기존 체이닝 실험(적재율 0.25~4.0)이
+보존됩니다. `experiments/report.pdf`는 두 실험과 결과 해석을 담은 2쪽 보고서입니다.
+
+외부 Python 라이브러리는 쓰지 않습니다. `make experiment`으로 한글 PDF를
+생성하려면 시스템에 NanumGothic 글꼴이 필요합니다
+(Debian/Ubuntu: `fonts-nanum`). 글꼴은 PDF에 포함되므로 읽을 때는 필요하지 않습니다.
 
 ## 로컬에서 하기
 
