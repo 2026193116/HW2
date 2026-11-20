@@ -92,6 +92,11 @@ class HashTable(Generic[Value]):
         for bucket in self._buckets:
             yield from bucket
 
+    def bucket_items(self) -> Iterator[tuple[int, str, Value]]:
+        for bucket_index, bucket in enumerate(self._buckets):
+            for key, value in bucket:
+                yield bucket_index, key, value
+
     def __len__(self) -> int:
         return self._size
 
